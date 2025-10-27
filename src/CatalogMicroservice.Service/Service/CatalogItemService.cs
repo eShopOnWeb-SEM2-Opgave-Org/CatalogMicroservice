@@ -41,8 +41,8 @@ internal class CatalogItemService : ICatalogItemService
 
     public async Task<CatalogItem?> CreateItemAsync(CreateCatalogItem item, CancellationToken token = default)
     {
-        CatalogBrand brand = await _brandService.GetBrandByIdAsync(item.CatalogBrandId, token);
-        CatalogType type  = await _typeService.GetCatalogTypeAsync(item.CatalogTypeId, token);
+        CatalogBrand? brand = await _brandService.GetBrandByIdAsync(item.CatalogBrandId, token);
+        CatalogType? type  = await _typeService.GetCatalogTypeAsync(item.CatalogTypeId, token);
 
         if (brand is null || type is null)
             return null;
@@ -51,25 +51,18 @@ internal class CatalogItemService : ICatalogItemService
         return created;
     }
 
-    public async Task<bool> UpdateItemAsync(CatalogItem updateItem, CancellationToken token = default)
+    public async Task<bool> UpdateItemAsync(UpdateCatalogItem updateItem, CancellationToken token = default)
     {
         CatalogItem? existing = await _itemRepository.GetItemAsync(updateItem.Id, token);
         if (existing is null)
             return false;
 
-        CatalogBrand brand = await _brandService.GetBrandByIdAsync(updateItem.CatalogBrandId, token);
-        CatalogType type  = await _typeService.GetCatalogTypeAsync(updateItem.CatalogTypeId, token);
+        CatalogBrand? brand = await _brandService.GetBrandByIdAsync(updateItem.CatalogBrandId, token);
+        CatalogType? type  = await _typeService.GetCatalogTypeAsync(updateItem.CatalogTypeId, token);
         if (brand is null || type is null)
             return false;
 
-        existing.Name           = updateItem.Name;
-        existing.Description    = updateItem.Description;
-        existing.Price          = updateItem.Price;
-        existing.PictureUri     = updateItem.PictureUri;
-        existing.CatalogBrandId = updateItem.CatalogBrandId;
-        existing.CatalogTypeId  = updateItem.CatalogTypeId;
-
-        await _itemRepository.UpdateItemAsync(existing, token);
+        await _itemRepository.UpdateItemAsync(updateItem, token);
         return true;
     }
 

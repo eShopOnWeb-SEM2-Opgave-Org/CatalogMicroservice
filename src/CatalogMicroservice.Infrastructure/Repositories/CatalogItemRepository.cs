@@ -297,7 +297,7 @@ OUTPUT INSERTED.Id
         @{nameof(CreateCatalogItem.Name)},
         @{nameof(CreateCatalogItem.Description)},
         @{nameof(CreateCatalogItem.Price)},
-        @{nameof(CreateCatalogItem.PictureUri)}
+        @{nameof(CreateCatalogItem.PictureUri)},
         @{nameof(CreateCatalogItem.CatalogTypeId)},
         @{nameof(CreateCatalogItem.CatalogBrandId)}
     );
@@ -314,7 +314,7 @@ OUTPUT INSERTED.Id
 
             command.AddParameterValue($"@{nameof(CreateCatalogItem.Name)}", SqlDbType.VarChar, item.Name);
             command.AddParameterValue($"@{nameof(CreateCatalogItem.Description)}", SqlDbType.VarChar, item.Description);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.Price)}", SqlDbType.Binary, item.Price);
+            command.AddParameterValue($"@{nameof(CreateCatalogItem.Price)}", SqlDbType.Decimal, item.Price);
             command.AddParameterValue($"@{nameof(CreateCatalogItem.PictureUri)}", SqlDbType.VarChar, item.PictureUri);
             command.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogTypeId)}", SqlDbType.Int, item.CatalogTypeId);
             command.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogBrandId)}", SqlDbType.Int, item.CatalogBrandId);
@@ -347,7 +347,7 @@ OUTPUT INSERTED.Id
         }
     }
 
-    public async Task UpdateItemAsync(CatalogItem item, CancellationToken cancellationToken = default)
+    public async Task UpdateItemAsync(UpdateCatalogItem item, CancellationToken cancellationToken = default)
     {
         string sqlString = $@"
 USE [{_databaseName}];
@@ -372,13 +372,13 @@ WHERE Id = @{nameof(CatalogItem.Id)};
 
             command.CommandText = sqlString;
 
-            command.AddParameterValue($"@{nameof(CatalogItem.Id)}", SqlDbType.Int, item.Id);
-            command.AddParameterValue($"@{nameof(CatalogItem.Name)}", SqlDbType.VarChar, item.Name);
-            command.AddParameterValue($"@{nameof(CatalogItem.Description)}", SqlDbType.VarChar, item.Description);
-            command.AddParameterValue($"@{nameof(CatalogItem.Price)}", SqlDbType.Binary, item.Price);
-            command.AddParameterValue($"@{nameof(CatalogItem.PictureUri)}", SqlDbType.VarChar, item.PictureUri);
-            command.AddParameterValue($"@{nameof(CatalogItem.CatalogTypeId)}", SqlDbType.Int, item.CatalogTypeId);
-            command.AddParameterValue($"@{nameof(CatalogItem.CatalogBrandId)}", SqlDbType.Int, item.CatalogBrandId);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.Id)}", SqlDbType.Int, item.Id);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.Name)}", SqlDbType.VarChar, item.Name);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.Description)}", SqlDbType.VarChar, item.Description);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.Price)}", SqlDbType.Decimal, item.Price);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.PictureUri)}", SqlDbType.VarChar, item.PictureUri);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.CatalogTypeId)}", SqlDbType.Int, item.CatalogTypeId);
+            command.AddParameterValue($"@{nameof(UpdateCatalogItem.CatalogBrandId)}", SqlDbType.Int, item.CatalogBrandId);
 
             await command.ExecuteNonQueryAsync(cancellationToken);
 

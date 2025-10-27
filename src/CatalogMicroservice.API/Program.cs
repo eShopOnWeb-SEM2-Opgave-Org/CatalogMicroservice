@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 using CatalogMicroservice.Infrastructure.DependencyInjection;
+using CatalogMicroservice.Service.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ var databaseName = Environment.GetEnvironmentVariable(
     EnvironmentVariableTarget.Process
 ) ?? "";
 
+builder.Services.AddCatalogServices();
 builder.Services.AddCatalogBrandRepository(connectionString, databaseName);
 builder.Services.AddCatalogItemRepository(connectionString, databaseName);
 builder.Services.AddCatalogTypeRepository(connectionString, databaseName);

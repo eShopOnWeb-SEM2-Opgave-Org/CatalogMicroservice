@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CatalogMicroservice.Infrastructure.Interfaces;
+using CatalogMicroservice.Service.Interfaces;
 using CatalogMicroservice.Common.Models;
 
 namespace CatalogMicroservice.API.Controllers;
 
 [ApiController]
-[Route("api/catalog")]
+[Route("api/catalog-types")]
 public class CatalogTypeController : ControllerBase
 {
-    private readonly ICatalogTypeRepository _repository;
+    private readonly ICatalogTypeService _service;
 
-    public CatalogTypeController(ICatalogTypeRepository repository) => _repository = repository;
+    public CatalogTypeController(ICatalogTypeService service) => _service = service;
 
-    [HttpGet("type")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<CatalogType>>> GetAll(CancellationToken ct)
     {
-        var types = await _repository.GetCatalogTypesAsync(ct);
+        var types = await _service.GetCatalogTypesAsync(ct);
         return Ok(types);
     }
 
-    [HttpGet("type/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<CatalogType>> GetById(int id, CancellationToken ct)
     {
-        var type = await _repository.GetCatalogTypeAsync(id, ct);
-        return type is null ? NotFound() : Ok(type);
+        var type = await _service.GetCatalogTypeAsync(id, ct);
+        return type is null ? NoContent() : Ok(type);
     }
 }

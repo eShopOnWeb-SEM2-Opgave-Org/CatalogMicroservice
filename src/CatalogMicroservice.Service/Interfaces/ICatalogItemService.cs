@@ -8,6 +8,6 @@ public interface ICatalogItemService
     Task<CatalogItem?> GetItemAsync(int id, CancellationToken token = default);
 
     Task<CatalogItem?> CreateItemAsync(CreateCatalogItem create, CancellationToken token = default);
-    Task<bool> UpdateItemAsync(CatalogItem update, CancellationToken token = default);
+    Task<bool> UpdateItemAsync(UpdateCatalogItem update, CancellationToken token = default);
     Task<bool> DeleteItemAsync(int id, CancellationToken token = default);
 }

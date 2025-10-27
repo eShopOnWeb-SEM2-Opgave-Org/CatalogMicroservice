@@ -85,7 +85,7 @@ WHERE T.Id = @{nameof(typeId)};
         string sqlString = $@"
 USE [{_databaseName}];
 
-SELECT T.Id, T.[Type] from [CatalogTypes];
+SELECT T.Id, T.[Type] from [CatalogTypes] T;
 ";
 
         try

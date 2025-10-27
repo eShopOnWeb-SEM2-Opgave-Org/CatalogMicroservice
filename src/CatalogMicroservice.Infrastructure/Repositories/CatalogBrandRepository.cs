@@ -38,7 +38,7 @@ internal class CatalogBrandRepository: ICatalogBrandRepository
         string sqlString = $@"
 USE [{_databaseName}];
 
-SELECT B.Id B.Brand FROM [CatalogBrands] B
+SELECT B.Id, B.Brand FROM [CatalogBrands] B
 WHERE B.Id = @{nameof(brandId)};
 ";
 

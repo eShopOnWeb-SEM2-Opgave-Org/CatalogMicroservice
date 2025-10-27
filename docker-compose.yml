@@ -1,0 +1,40 @@
+networks:
+  catalog-microservice:
+    driver: bridge
+
+services:
+  catalog-api:
+    build:
+      dockerfile: ./src/CatalogMicroservice.API/Dockerfile
+      context: .
+      no_cache: true
+    ports:
+     - "52080:8080"
+    depends_on:
+     - catalog-sqlserver
+    networks:
+     - catalog-microservice
+    restart: unless-stopped
+    environment:
+     - SQL_CONNECTION_STRING=Data Source=catalog-sqlserver;Integrated Security=false;User ID=sa;Password=@sineThingComplicated1234;Encrypt=false;TrustServerCertificate=true;
+     - SQL_DATABASE_NAME=CatalogDatabase
+     - SHOULD_SHOW_SWAGGER=true
+
+  catalog-sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge
+    healthcheck:
+      test: ["CMD", "sqlcmd", "-S", "localhost", "-U", "sa", "-P", "@sineThingComplicated1234", "-Q", "SELECT 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+     - "52433:1433"
+    volumes:
+     - ./data/mssql-data:/var/opt/mssql/data
+    environment:
+     - SA_PASSWORD=@sineThingComplicated1234
+     - ACCEPT_EULA=Y
+    networks:
+     - catalog-microservice
+    restart: unless-stopped
+
