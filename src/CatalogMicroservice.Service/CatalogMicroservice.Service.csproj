@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatalogMicroservice.Common\CatalogMicroservice.Common.csproj" />
+    <ProjectReference Include="..\CatalogMicroservice.Infrastructure\CatalogMicroservice.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

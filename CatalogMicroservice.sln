@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogMicroservice.API", "src\CatalogMicroservice.API\CatalogMicroservice.API.csproj", "{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogMicroservice.Common", "src\CatalogMicroservice.Common\CatalogMicroservice.Common.csproj", "{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogMicroservice.Infrastructure", "src\CatalogMicroservice.Infrastructure\CatalogMicroservice.Infrastructure.csproj", "{02710AED-BB5D-4B70-8262-8BC248437643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogMicroservice.RabbitMQ", "src\CatalogMicroservice.RabbitMQ\CatalogMicroservice.RabbitMQ.csproj", "{DCD94977-88B0-4E3E-BE23-6F22848E1FE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogMicroservice.Service", "src\CatalogMicroservice.Service\CatalogMicroservice.Service.csproj", "{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02710AED-BB5D-4B70-8262-8BC248437643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02710AED-BB5D-4B70-8262-8BC248437643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02710AED-BB5D-4B70-8262-8BC248437643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02710AED-BB5D-4B70-8262-8BC248437643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCD94977-88B0-4E3E-BE23-6F22848E1FE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCD94977-88B0-4E3E-BE23-6F22848E1FE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCD94977-88B0-4E3E-BE23-6F22848E1FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCD94977-88B0-4E3E-BE23-6F22848E1FE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72BD1FD2-E360-46E1-9191-7D7DA7ADC89C} = {9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}
+		{E48DF0FA-09A2-4323-ADDB-F4A7A5DC8202} = {9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}
+		{02710AED-BB5D-4B70-8262-8BC248437643} = {9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}
+		{DCD94977-88B0-4E3E-BE23-6F22848E1FE9} = {9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}
+		{D1596C9E-D7C8-4A62-81FA-9EDD3CDA47BD} = {9D8E70EA-05AD-4C9B-A55D-DA13F20406A0}
+	EndGlobalSection
+EndGlobal
