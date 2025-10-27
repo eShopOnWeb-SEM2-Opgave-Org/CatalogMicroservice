@@ -15,14 +15,14 @@ public class CatalogTypeController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CatalogType>>> GetAll(CancellationToken ct)
     {
-        var types = await _service.GetCatalogTypesAsync(ct);
+        IEnumerable<CatalogType> types = await _service.GetCatalogTypesAsync(ct);
         return Ok(types);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CatalogType>> GetById(int id, CancellationToken ct)
     {
-        var type = await _service.GetCatalogTypeAsync(id, ct);
+        CatalogType? type = await _service.GetCatalogTypeAsync(id, ct);
         return type is null ? NoContent() : Ok(type);
     }
 }

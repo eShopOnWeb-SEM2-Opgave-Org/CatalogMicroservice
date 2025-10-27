@@ -68,7 +68,7 @@ internal class CatalogItemService : ICatalogItemService
 
     public async Task<bool> DeleteItemAsync(int id, CancellationToken token = default)
     {
-        var exists = await _itemRepository.GetItemAsync(id, token);
+        CatalogItem? exists = await _itemRepository.GetItemAsync(id, token);
         if (exists is null)
             return false;
 

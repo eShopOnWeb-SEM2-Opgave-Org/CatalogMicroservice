@@ -24,14 +24,14 @@ public class CatalogItemController : ControllerBase
         if (pageNo < 1 || pageSize < 1)
             return BadRequest("pageNo og pageSize skal være >= 1.");
 
-        var items = await _service.GetItemsAsync(pageNo, pageSize, brandId, typeId, ct);
+        IEnumerable<CatalogItem> items = await _service.GetItemsAsync(pageNo, pageSize, brandId, typeId, ct);
         return Ok(items);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CatalogItem>> GetById(int id, CancellationToken ct)
     {
-        var item = await _service.GetItemAsync(id, ct);
+        CatalogItem? item = await _service.GetItemAsync(id, ct);
         return item is null ? NoContent() : Ok(item);
     }
 
@@ -41,7 +41,7 @@ public class CatalogItemController : ControllerBase
         if (dto is null)
             return BadRequest("Missing Model");
 
-        var created = await _service.CreateItemAsync(dto, ct);
+        CatalogItem? created = await _service.CreateItemAsync(dto, ct);
         if (created is null)
             return Problem("failed to create new item");
 
@@ -54,7 +54,7 @@ public class CatalogItemController : ControllerBase
         if (model is null)
             return BadRequest("Missing model");
 
-        var existing = await _service.GetItemAsync(model.Id, ct);
+        CatalogItem? existing = await _service.GetItemAsync(model.Id, ct);
         if (existing is null) return NotFound();
 
         await _service.UpdateItemAsync(model, ct);
@@ -64,7 +64,7 @@ public class CatalogItemController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        var existing = await _service.GetItemAsync(id, ct);
+        CatalogItem? existing = await _service.GetItemAsync(id, ct);
         if (existing is null) return NotFound();
 
         await _service.DeleteItemAsync(id, ct);
