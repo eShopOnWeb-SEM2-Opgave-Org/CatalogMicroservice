@@ -7,6 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(config =>
+{
+    config.AddPolicy("default-policy", policy =>
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .WithOrigins("http://localhost:5106"));
+    config.DefaultPolicyName = "default-policy";
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -66,6 +75,8 @@ if (setupDb is "true")
     using var scope = app.Services.CreateScope();
     scope.SetupCatalogDatabase();
 }
+
+app.UseCors("default-policy");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

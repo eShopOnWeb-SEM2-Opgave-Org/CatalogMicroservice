@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CatalogMicroservice.Service.Interfaces;
 using CatalogMicroservice.Common.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace CatalogMicroservice.API.Controllers;
 
 [ApiController]
 [Route("api/catalog-brands")]
+[EnableCors("default-policy")]
 public class CatalogBrandsController : ControllerBase
 {
     private readonly ICatalogBrandService _service;

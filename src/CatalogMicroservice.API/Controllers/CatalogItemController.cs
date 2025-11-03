@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CatalogMicroservice.Service.Interfaces;
 using CatalogMicroservice.Common.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace CatalogMicroservice.API.Controllers;
 
 [ApiController]
 [Route("api/catalog-items")]
+[EnableCors("default-policy")]
 public class CatalogItemController : ControllerBase
 {
     private readonly ICatalogItemService _service;
