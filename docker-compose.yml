@@ -19,6 +19,7 @@ services:
      - SQL_CONNECTION_STRING=Data Source=catalog-sqlserver;Integrated Security=false;User ID=sa;Password=@sineThingComplicated1234;Encrypt=false;TrustServerCertificate=true;
      - SQL_DATABASE_NAME=CatalogDatabase
      - SHOULD_SHOW_SWAGGER=true
+     - SHOULD_SETUP_DB=true
 
   catalog-sqlserver:
     image: mcr.microsoft.com/azure-sql-edge
