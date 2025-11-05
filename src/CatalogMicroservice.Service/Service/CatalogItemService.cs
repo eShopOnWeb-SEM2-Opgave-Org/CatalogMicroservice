@@ -18,16 +18,32 @@ internal class CatalogItemService : ICatalogItemService
         _typeService = typeService;
     }
 
-    public async Task<IEnumerable<CatalogItem>> GetItemsAsync(int pageIndex, int pageSize, int? brandId, int? typeId, CancellationToken token = default)
+    public async Task<IEnumerable<CatalogItem>> GetItemsAsync(int? pageIndex, int pageSize, int? brandId, int? typeId, CancellationToken token = default)
     {
-        if (pageIndex < 1) { pageIndex = 1; }
         if (pageSize <= 0) { pageSize = 10; }
 
-        IEnumerable<CatalogItem> page = await _itemRepository.GetItemPageAsync(pageIndex,
-            pageSize,
-            brandId,
-            typeId,
-            token
+        IEnumerable<CatalogItem> page = pageIndex switch
+        {
+            -1 or null => await _itemRepository.GetAllItemsAsync(token),
+            int pageNo => await _itemRepository.GetItemPageAsync(pageNo,
+                pageSize,
+                brandId,
+                typeId,
+                token
+            )
+        };
+
+        page = page.Select(item =>
+            new CatalogItem
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                PictureUri = item.PictureUri?.Replace("http://catalogbaseurltobereplaced", ""),
+                Price = item.Price,
+                CatalogBrandId = item.CatalogBrandId,
+                CatalogTypeId = item.CatalogTypeId
+            }
         );
 
         return page;

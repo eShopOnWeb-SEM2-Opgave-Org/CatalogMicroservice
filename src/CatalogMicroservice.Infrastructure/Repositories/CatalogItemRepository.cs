@@ -221,21 +221,103 @@ WHERE C.Id = @itemId;
         }
     }
 
+    public async Task<IEnumerable<CatalogItem>> GetAllItemsAsync(CancellationToken cancellationToken)
+    {
+        string sqlString = $@"
+USE [{_databaseName}];
+
+SELECT
+    C.Id,
+    C.[Name],
+    C.[Description],
+    C.Price,
+    C.PictureUri,
+    C.CatalogBrandId,
+    C.CatalogTypeId
+FROM [Catalog] C
+";
+
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(_connectionString);
+            if (connection.State is ConnectionState.Closed)
+                await connection.OpenAsync(cancellationToken);
+
+            using SqlCommand command = connection.CreateCommand();
+
+            command.CommandText = sqlString;
+            List<CatalogItem> items = [];
+            SqlDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
+
+            while(await reader.ReadAsync(cancellationToken))
+            {
+                int i = 0;
+                CatalogItem item = new CatalogItem
+                {
+                    Id = reader.GetInt32(i++),
+                    Name = reader.GetString(i++),
+                    Description = reader.GetString(i++),
+                    Price = reader.GetDecimal(i++),
+                    PictureUri = reader.GetString(i++),
+                    CatalogBrandId = reader.GetInt32(i++),
+                    CatalogTypeId = reader.GetInt32(i++)
+                };
+
+                items.Add(item);
+            }
+
+            return items;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                e,
+                "Could not fetch items due to internal error"
+            );
+
+            throw e;
+        }
+    }
+
     public async Task<IEnumerable<CatalogItem>> GetItemPageAsync(int pageNo, int pageSize, int? brandId, int? typeId, CancellationToken cancellationToken = default)
     {
         string sqlString = $@"
 USE [{_databaseName}];
 
 WITH [ROW] AS (
-    SELECT * FROM [Catalog]
+    SELECT
+        C.Id,
+        C.[Name],
+        C.[Description],
+        C.Price,
+        C.PictureUri,
+        C.CatalogBrandId,
+        C.CatalogTypeId
+    FROM [Catalog] C
     WHERE (CatalogBrandId = @{nameof(brandId)} OR @{nameof(brandId)} IS NULL)
     AND (CatalogTypeId = @{nameof(typeId)} OR @{nameof(typeId)} IS NULL)
     EXCEPT
-    SELECT TOP (@{nameof(pageSize)} * (@{nameof(pageNo)} - 1)) * FROM [Catalog]
+    SELECT TOP (@{nameof(pageSize)} * (@{nameof(pageNo)} - 1))
+        E.Id,
+        E.[Name],
+        E.[Description],
+        E.Price,
+        E.PictureUri,
+        E.CatalogBrandId,
+        E.CatalogTypeId
+    FROM [Catalog] E
     WHERE (CatalogBrandId = @{nameof(brandId)} OR @{nameof(brandId)} IS NULL)
     and (CatalogTypeId = @{nameof(typeId)} OR @{nameof(typeId)} IS NULL)
 )
-SELECT TOP (@{nameof(pageSize)}) * FROM [ROW];
+SELECT TOP (@{nameof(pageSize)})
+    R.Id,
+    R.[Name],
+    R.[Description],
+    R.Price,
+    R.PictureUri,
+    R.CatalogBrandId,
+    R.CatalogTypeId
+FROM [ROW] R;
 ";
 
         try

@@ -2,6 +2,7 @@
 using CatalogMicroservice.Service.Interfaces;
 using CatalogMicroservice.Common.Models;
 using Microsoft.AspNetCore.Cors;
+using CatalogMicroservice.Common.Models.Responses;
 
 namespace CatalogMicroservice.API.Controllers;
 
@@ -15,19 +16,23 @@ public class CatalogItemController : ControllerBase
     public CatalogItemController(ICatalogItemService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CatalogItem>>> GetPage(
+    public async Task<ActionResult<CatalogItemPageResponse>> GetPage(
         // en ide til at lave pagination og filtrering, her fra starten, skal nok ændres ERH
-        [FromQuery] int pageNo = 1,
+        [FromQuery] int pageNo = -1,
         [FromQuery] int pageSize = 10,
         [FromQuery] int? brandId = null,
         [FromQuery] int? typeId = null,
         CancellationToken ct = default)
     {
-        if (pageNo < 1 || pageSize < 1)
-            return BadRequest("pageNo og pageSize skal være >= 1.");
-
         IEnumerable<CatalogItem> items = await _service.GetItemsAsync(pageNo, pageSize, brandId, typeId, ct);
-        return Ok(items);
+
+        var response = new CatalogItemPageResponse
+        {
+            CatalogItems = items,
+            PageCount = 1
+        };
+
+        return Ok(new CatalogItemPageResponse[] {response});
     }
 
     [HttpGet("{id:int}")]

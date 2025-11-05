@@ -5,6 +5,8 @@ namespace CatalogMicroservice.Infrastructure.Interfaces;
 public interface ICatalogItemRepository
 {
     Task<CatalogItem?> GetItemAsync(int itemId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<CatalogItem>> GetAllItemsAsync(CancellationToken cancellationToken = default);
+
     Task<IEnumerable<CatalogItem>> GetItemPageAsync(int pageNo, int pageSize, int? brandId, int? typeId, CancellationToken cancellationToken = default);
 
     Task<CatalogItem> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default);

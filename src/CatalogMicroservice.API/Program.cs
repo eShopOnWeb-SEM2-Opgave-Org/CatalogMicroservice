@@ -12,7 +12,7 @@ builder.Services.AddCors(config =>
     config.AddPolicy("default-policy", policy =>
         policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .WithOrigins("http://localhost:5106"));
+              .AllowAnyOrigin());
     config.DefaultPolicyName = "default-policy";
 });
 
@@ -47,7 +47,10 @@ builder.Services.AddCatalogBrandRepository(connectionString, databaseName);
 builder.Services.AddCatalogItemRepository(connectionString, databaseName);
 builder.Services.AddCatalogTypeRepository(connectionString, databaseName);
 
-builder.Services.AddLogging();
+builder.Services.AddLogging(config =>
+    config
+        .AddConsole()
+);
 
 var app = builder.Build();
 
@@ -78,7 +81,7 @@ if (setupDb is "true")
 
 app.UseCors("default-policy");
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
