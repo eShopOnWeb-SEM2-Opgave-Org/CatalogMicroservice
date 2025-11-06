@@ -18,7 +18,7 @@ public class CatalogTypeController : ControllerBase
     public async Task<ActionResult<IEnumerable<CatalogType>>> GetAll(CancellationToken ct)
     {
         IEnumerable<CatalogType> types = await _service.GetCatalogTypesAsync(ct);
-        return Ok(types);
+        return Ok(new { catalogTypes = types});
     }
 
     [HttpGet("{id:int}")]

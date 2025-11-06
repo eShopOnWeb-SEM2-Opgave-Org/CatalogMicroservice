@@ -18,7 +18,7 @@ public class CatalogBrandsController : ControllerBase
     public async Task<ActionResult<IEnumerable<CatalogBrand>>> GetAll(CancellationToken ct)
     {
         IEnumerable<CatalogBrand> brands = await _service.GetBrandsAsync(ct);
-        return Ok(brands);
+        return Ok(new { catalogBrands = brands });
     }
 
     [HttpGet("{id:int}")]

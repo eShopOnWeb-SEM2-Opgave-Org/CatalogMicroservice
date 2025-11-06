@@ -82,7 +82,7 @@ BEGIN
 END
 ELSE BEGIN
     CREATE TABLE [Catalog] (
-        Id INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+        Id INT PRIMARY KEY NOT NULL,
         [Name] VARCHAR(50) NOT NULL,
         [Description] VARCHAR(MAX),
         Price DECIMAL(18, 2) NOT NULL,
@@ -370,12 +370,21 @@ FROM [ROW] R;
 
     public async Task<CatalogItem> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default)
     {
-        string sqlString = $@"
+        //NOTE: this is a really bad way to do ids, but when the database does not make use for auto increment,
+        //      then it stops being our problem.
+        string getNextIdStmt = $@"
 USE [{_databaseName}];
 
-INSERT INTO [Catalog]([Name], [Description], Price, PictureUri, CatalogTypeId, CatalogBrandId)
+SELECT TOP 1 (C.Id + 1) as Id FROM [Catalog] C ORDER BY C.Id DESC
+";
+
+        string createSqlStmt = $@"
+USE [{_databaseName}];
+
+INSERT INTO [Catalog](Id, [Name], [Description], Price, PictureUri, CatalogTypeId, CatalogBrandId)
 OUTPUT INSERTED.Id
      VALUES (
+        @id,
         @{nameof(CreateCatalogItem.Name)},
         @{nameof(CreateCatalogItem.Description)},
         @{nameof(CreateCatalogItem.Price)},
@@ -390,20 +399,25 @@ OUTPUT INSERTED.Id
             if (connection.State is ConnectionState.Closed)
                 await connection.OpenAsync(cancellationToken);
 
-            using SqlCommand command = connection.CreateCommand();
+            using SqlCommand nextIdCommand = connection.CreateCommand();
+            nextIdCommand.CommandText = getNextIdStmt;
 
-            command.CommandText = sqlString;
+            int nextId = (int?)await nextIdCommand.ExecuteScalarAsync(cancellationToken) ?? 1;
 
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.Name)}", SqlDbType.VarChar, item.Name);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.Description)}", SqlDbType.VarChar, item.Description);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.Price)}", SqlDbType.Decimal, item.Price);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.PictureUri)}", SqlDbType.VarChar, item.PictureUri);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogTypeId)}", SqlDbType.Int, item.CatalogTypeId);
-            command.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogBrandId)}", SqlDbType.Int, item.CatalogBrandId);
+            using SqlCommand insertCommand = connection.CreateCommand();
+            insertCommand.CommandText = createSqlStmt;
+
+            insertCommand.AddParameterValue($"@id", SqlDbType.Int, nextId);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.Name)}", SqlDbType.VarChar, item.Name);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.Description)}", SqlDbType.VarChar, item.Description);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.Price)}", SqlDbType.Decimal, item.Price);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.PictureUri)}", SqlDbType.VarChar, item.PictureUri);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogTypeId)}", SqlDbType.Int, item.CatalogTypeId);
+            insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.CatalogBrandId)}", SqlDbType.Int, item.CatalogBrandId);
 
             //NOTE: execute scalar returns the first column of the first rown, which is set to be
             //      the inserted items id.
-            int insertedId = (int)await command.ExecuteScalarAsync(cancellationToken);
+            int insertedId = (int)await insertCommand.ExecuteScalarAsync(cancellationToken);
 
             CatalogItem newItem = new CatalogItem
             {

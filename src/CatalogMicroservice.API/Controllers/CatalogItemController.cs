@@ -32,7 +32,7 @@ public class CatalogItemController : ControllerBase
             PageCount = 1
         };
 
-        return Ok(new CatalogItemPageResponse[] {response});
+        return Ok(response);
     }
 
     [HttpGet("{id:int}")]

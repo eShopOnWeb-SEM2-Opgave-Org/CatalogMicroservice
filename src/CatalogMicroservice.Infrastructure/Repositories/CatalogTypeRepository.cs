@@ -62,7 +62,7 @@ WHERE T.Id = @{nameof(typeId)};
                 type = new CatalogType
                 {
                     Id = reader.GetInt32(i++),
-                    Type = reader.GetString(i++)
+                    Name = reader.GetString(i++)
                 };
             }
 
@@ -106,7 +106,7 @@ SELECT T.Id, T.[Type] from [CatalogTypes] T;
                 CatalogType type = new CatalogType
                 {
                     Id = reader.GetInt32(i++),
-                    Type = reader.GetString(i++)
+                    Name = reader.GetString(i++)
                 };
                 result.Add(type);
             }

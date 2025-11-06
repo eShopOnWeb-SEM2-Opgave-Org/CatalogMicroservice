@@ -63,7 +63,7 @@ WHERE B.Id = @{nameof(brandId)};
                 result = new CatalogBrand
                 {
                     Id = reader.GetInt32(i++),
-                    Brand = reader.GetString(i++)
+                    Name = reader.GetString(i++)
                 };
             }
 
@@ -107,7 +107,7 @@ SELECT B.Id, B.Brand FROM [CatalogBrands] B;
                 CatalogBrand brand = new CatalogBrand
                 {
                     Id = reader.GetInt32(i++),
-                    Brand = reader.GetString(i++)
+                    Name = reader.GetString(i++)
                 };
 
                 result.Add(brand);
