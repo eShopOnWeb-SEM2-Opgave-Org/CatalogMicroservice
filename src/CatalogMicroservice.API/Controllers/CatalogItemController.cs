@@ -25,11 +25,12 @@ public class CatalogItemController : ControllerBase
         CancellationToken ct = default)
     {
         IEnumerable<CatalogItem> items = await _service.GetItemsAsync(pageNo, pageSize, brandId, typeId, ct);
+        int itemCount = await _service.ItemCountAsync(brandId, typeId, ct);
 
         var response = new CatalogItemPageResponse
         {
             CatalogItems = items,
-            PageCount = 1
+            PageCount = (int)Math.Ceiling((double)itemCount / pageSize)
         };
 
         return Ok(response);
