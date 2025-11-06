@@ -18,10 +18,10 @@ public class CatalogItemController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<CatalogItemPageResponse>> GetPage(
         // en ide til at lave pagination og filtrering, her fra starten, skal nok ændres ERH
-        [FromQuery] int pageNo = -1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] int? brandId = null,
-        [FromQuery] int? typeId = null,
+        [FromQuery] int pageNo,
+        [FromQuery] int pageSize,
+        [FromQuery] int? brandId,
+        [FromQuery] int? typeId,
         CancellationToken ct = default)
     {
         IEnumerable<CatalogItem> items = await _service.GetItemsAsync(pageNo, pageSize, brandId, typeId, ct);
@@ -40,6 +40,13 @@ public class CatalogItemController : ControllerBase
     {
         CatalogItem? item = await _service.GetItemAsync(id, ct);
         return item is null ? NoContent() : Ok(item);
+    }
+
+    [HttpGet("/count")]
+    public async Task<ActionResult<int>> GetItemCountAsync(int? brand, int? type, CancellationToken ct = default)
+    {
+        int count = await _service.ItemCountAsync(brand, type, ct);
+        return Ok(count);
     }
 
     [HttpPost]

@@ -20,7 +20,10 @@ internal class CatalogItemService : ICatalogItemService
 
     public async Task<IEnumerable<CatalogItem>> GetItemsAsync(int? pageIndex, int pageSize, int? brandId, int? typeId, CancellationToken token = default)
     {
-        if (pageSize <= 0) { pageSize = 10; }
+        if (pageIndex is not > 0)
+            pageIndex = -1;
+        if (pageSize <= 0)
+            pageSize = 10;
 
         IEnumerable<CatalogItem> page = pageIndex switch
         {
@@ -47,6 +50,12 @@ internal class CatalogItemService : ICatalogItemService
         );
 
         return page;
+    }
+
+    public async Task<int> ItemCountAsync(int? brandId, int? typeId, CancellationToken token = default)
+    {
+        int count = await _itemRepository.ItemCountAsync(brandId, typeId, token);
+        return count;
     }
 
     public async Task<CatalogItem?> GetItemAsync(int id, CancellationToken token = default)

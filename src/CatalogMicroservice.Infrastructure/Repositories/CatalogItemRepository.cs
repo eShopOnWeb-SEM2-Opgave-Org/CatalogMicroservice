@@ -221,6 +221,40 @@ WHERE C.Id = @itemId;
         }
     }
 
+    public async Task<int> ItemCountAsync(int? brandId, int? typeId, CancellationToken cancellationToken)
+    {
+        string sqlString = $@"
+USE [{_databaseName}]
+
+SELECT COUNT(C.Id) From [Catalog] C
+WHERE (CatalogBrandId = @{nameof(brandId)} OR @{nameof(brandId)} IS NULL)
+AND (CatalogTypeId = @{nameof(typeId)} OR @{nameof(typeId)} IS NULL)
+";
+
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = connection.CreateCommand();
+            command.CommandText = sqlString;
+
+            command.AddParameterValue($"@{nameof(brandId)}", SqlDbType.Int, brandId is null ? DBNull.Value : brandId);
+            command.AddParameterValue($"@{nameof(typeId)}", SqlDbType.Int, typeId is null ? DBNull.Value : typeId);
+
+            int count = (int?)await command.ExecuteScalarAsync(cancellationToken) ?? 0;
+
+            return count;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                e,
+                "Could not get item count, due to internal error"
+            );
+
+            throw e;
+        }
+    }
+
     public async Task<IEnumerable<CatalogItem>> GetAllItemsAsync(CancellationToken cancellationToken)
     {
         string sqlString = $@"
