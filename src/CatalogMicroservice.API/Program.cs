@@ -72,7 +72,10 @@ if (app.Environment.IsDevelopment() || shouldShowSwagger is "true")
 var setupDb = Environment.GetEnvironmentVariable("SHOULD_SETUP_DB", EnvironmentVariableTarget.Process) ?? "false";
 
 if (setupDb is not "true")
+{
     Console.WriteLine(" [*] Setup db skipped");
+    app.Logger.LogInformation("CatalogMicroservice skipping database setup");
+}
 
 if (setupDb is "true")
 {

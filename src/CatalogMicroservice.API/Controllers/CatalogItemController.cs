@@ -43,7 +43,7 @@ public class CatalogItemController : ControllerBase
         return item is null ? NoContent() : Ok(item);
     }
 
-    [HttpGet("/count")]
+    [HttpGet("count")]
     public async Task<ActionResult<int>> GetItemCountAsync(int? brand, int? type, CancellationToken ct = default)
     {
         int count = await _service.ItemCountAsync(brand, type, ct);
