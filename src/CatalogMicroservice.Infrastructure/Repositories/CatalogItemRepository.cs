@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.Common;
 using CatalogMicroservice.Common.Models;
 using CatalogMicroservice.Infrastructure.Helpers;
 using CatalogMicroservice.Infrastructure.Interfaces;
@@ -397,7 +398,7 @@ FROM [ROW] R;
         }
     }
 
-    public async Task<CatalogItem> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default)
+    public async Task<(CatalogItem Item, DbTransaction Transaction)> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default)
     {
         //NOTE: this is a really bad way to do ids, but when the database does not make use for auto increment,
         //      then it stops being our problem.
@@ -424,17 +425,20 @@ OUTPUT INSERTED.Id
 ";
         try
         {
-            await using SqlConnection connection = new SqlConnection(_connectionString);
+            SqlConnection connection = new SqlConnection(_connectionString);
             if (connection.State is ConnectionState.Closed)
                 await connection.OpenAsync(cancellationToken);
+            SqlTransaction transaction = connection.BeginTransaction();
 
-            using SqlCommand nextIdCommand = connection.CreateCommand();
+            SqlCommand nextIdCommand = connection.CreateCommand();
             nextIdCommand.CommandText = getNextIdStmt;
+            nextIdCommand.Transaction = transaction;
 
             int nextId = (int?)await nextIdCommand.ExecuteScalarAsync(cancellationToken) ?? 1;
 
-            using SqlCommand insertCommand = connection.CreateCommand();
+            SqlCommand insertCommand = connection.CreateCommand();
             insertCommand.CommandText = createSqlStmt;
+            insertCommand.Transaction = transaction;
 
             insertCommand.AddParameterValue($"@id", SqlDbType.Int, nextId);
             insertCommand.AddParameterValue($"@{nameof(CreateCatalogItem.Name)}", SqlDbType.VarChar, item.Name);
@@ -459,7 +463,7 @@ OUTPUT INSERTED.Id
                 CatalogBrandId = item.CatalogBrandId
             };
 
-            return newItem;
+            return (newItem, transaction);
         }
         catch (Exception e)
         {

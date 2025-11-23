@@ -9,7 +9,7 @@ public interface ICatalogItemService
 
     Task<int> ItemCountAsync(int? brandId, int? typeId, CancellationToken token = default);
 
-    Task<CatalogItem?> CreateItemAsync(CreateCatalogItem create, CancellationToken token = default);
-    Task<bool> UpdateItemAsync(UpdateCatalogItem update, CancellationToken token = default);
-    Task<bool> DeleteItemAsync(int id, CancellationToken token = default);
+    Task CreateItemAsync(CreateCatalogItem create, CancellationToken token = default);
+    Task UpdateItemAsync(UpdateCatalogItem update, CancellationToken token = default);
+    Task DeleteItemAsync(int id, CancellationToken token = default);
 }

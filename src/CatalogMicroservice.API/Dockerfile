@@ -5,6 +5,8 @@ COPY ./src/CatalogMicroservice.API ./CatalogMicroservice.API
 COPY ./src/CatalogMicroservice.Common ./CatalogMicroservice.Common
 COPY ./src/CatalogMicroservice.Service ./CatalogMicroservice.Service
 COPY ./src/CatalogMicroservice.Infrastructure ./CatalogMicroservice.Infrastructure
+COPY ./src/CheatNuGetSource/InventoryMicroservice.Caller ./CheatNuGetSource/InventoryMicroservice.Caller
+COPY ./src/CheatNuGetSource/InventoryMicroservice.Common ./CheatNuGetSource/InventoryMicroservice.Common
 RUN dotnet restore ./CatalogMicroservice.API
 RUN dotnet publish ./CatalogMicroservice.API -o out
 

@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using CatalogMicroservice.Infrastructure.DependencyInjection;
 using CatalogMicroservice.Service.DependencyInjection;
+using InventoryMicroservice.Caller.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,20 @@ builder.Services.AddCatalogServices();
 builder.Services.AddCatalogBrandRepository(connectionString, databaseName);
 builder.Services.AddCatalogItemRepository(connectionString, databaseName);
 builder.Services.AddCatalogTypeRepository(connectionString, databaseName);
+
+var shouldUseInventoryMicroservice = Environment.GetEnvironmentVariable("USE_INVENTORY_MICROSERVICE",EnvironmentVariableTarget.Process) ?? "";
+if (shouldUseInventoryMicroservice is "true")
+{
+    var baseAddress = Environment.GetEnvironmentVariable("INVENTORY_BASE_ADDRESS", EnvironmentVariableTarget.Process) ?? "";
+    builder.Services.AddInventoryMicroserviceCaller(baseAddress);
+
+    var rabbitMQHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST", EnvironmentVariableTarget.Process) ?? "";
+    var rabbitMQUser = Environment.GetEnvironmentVariable("RABBITMQ_USER", EnvironmentVariableTarget.Process) ?? "";
+    var rabbitMQPassword = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD", EnvironmentVariableTarget.Process) ?? "";
+    builder.Services.AddInventoryMicroserviceRabbitMQ(rabbitMQHost, rabbitMQUser, rabbitMQPassword);
+}
+else
+    builder.Services.AddFakeInventoryMicroserivceConnection();
 
 builder.Services.AddLogging(config =>
     config

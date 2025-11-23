@@ -1,3 +1,4 @@
+using System.Data.Common;
 using CatalogMicroservice.Common.Models;
 
 namespace CatalogMicroservice.Infrastructure.Interfaces;
@@ -11,7 +12,7 @@ public interface ICatalogItemRepository
 
     Task<int> ItemCountAsync(int? brandId, int? typeId, CancellationToken cancellationToken = default);
 
-    Task<CatalogItem> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default);
+    Task<(CatalogItem Item, DbTransaction Transaction)> CreateItemAsync(CreateCatalogItem item, CancellationToken cancellationToken = default);
     Task UpdateItemAsync(UpdateCatalogItem item, CancellationToken cancellationToken = default);
     Task DeleteItemAsync(int itemId, CancellationToken cancellationToken = default);
 }

@@ -20,6 +20,7 @@ services:
      - SQL_DATABASE_NAME=CatalogDatabase
      - SHOULD_SHOW_SWAGGER=true
      - SHOULD_SETUP_DB=true
+     - USE_INVENTORY_MICROSERVICE=false
 
   catalog-sqlserver:
     image: mcr.microsoft.com/azure-sql-edge

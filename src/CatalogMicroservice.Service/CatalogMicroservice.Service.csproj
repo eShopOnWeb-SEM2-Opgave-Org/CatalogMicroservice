@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup Label="Fake NuGet source includes">
+    <ProjectReference Include="../CheatNuGetSource/InventoryMicroservice.Caller/InventoryMicroservice.Caller.csproj" />
+    <ProjectReference Include="../CheatNuGetSource/InventoryMicroservice.Common/InventoryMicroservice.Common.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\CatalogMicroservice.Common\CatalogMicroservice.Common.csproj" />
     <ProjectReference Include="..\CatalogMicroservice.Infrastructure\CatalogMicroservice.Infrastructure.csproj" />

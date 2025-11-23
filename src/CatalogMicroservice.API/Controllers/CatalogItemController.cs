@@ -56,11 +56,9 @@ public class CatalogItemController : ControllerBase
         if (dto is null)
             return BadRequest("Missing Model");
 
-        CatalogItem? created = await _service.CreateItemAsync(dto, ct);
-        if (created is null)
-            return Problem("failed to create new item");
+        await _service.CreateItemAsync(dto, ct);
 
-        return Created($"api/catalog-item/{created.Id}", created);
+        return Created();
     }
 
     [HttpPut]
