@@ -100,6 +100,7 @@ internal class CatalogItemService : ICatalogItemService
         StartingAmount = 5
     };
 
+    _logger.LogInformation("Sending to inventory service");
     await _caller.CreateInventoryStatusAsync(
         create,
         async cancellationToken => {
