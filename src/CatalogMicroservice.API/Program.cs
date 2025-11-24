@@ -1,8 +1,11 @@
 ﻿using System.Reflection;
+using Serilog;
+using Serilog.Formatting.Compact;
 using Microsoft.OpenApi.Models;
 using CatalogMicroservice.Infrastructure.DependencyInjection;
 using CatalogMicroservice.Service.DependencyInjection;
 using InventoryMicroservice.Caller.DependencyInjection;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,17 @@ builder.Services.AddCors(config =>
         );
     config.DefaultPolicyName = "default-policy";
 });
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("service_name", "catalog-api")
+    .Enrich.WithProperty("app", "catalog")
+    .Enrich.WithProperty("event.dataset", "catalog-api")
+    .WriteTo.Console(new CompactJsonFormatter()) //compact Json helps filebeat/bit
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -84,6 +98,11 @@ if (app.Environment.IsDevelopment() || shouldShowSwagger is "true")
     });
 }
 
+app.Use(async (ctx, next) =>
+{
+    using (Serilog.Context.LogContext.PushProperty("traceId", ctx.TraceIdentifier)) await next();
+});
+
 var setupDb = Environment.GetEnvironmentVariable("SHOULD_SETUP_DB", EnvironmentVariableTarget.Process) ?? "false";
 
 if (setupDb is not "true")
@@ -98,6 +117,7 @@ if (setupDb is "true")
     scope.SetupCatalogDatabase();
 }
 
+app.UseSerilogRequestLogging();
 app.UseCors("default-policy");
 
 // app.UseHttpsRedirection();

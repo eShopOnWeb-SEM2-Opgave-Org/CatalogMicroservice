@@ -2,6 +2,9 @@ networks:
   catalog-microservice:
     driver: bridge
 
+volumes:
+  esdata:
+
 services:
   catalog-api:
     build:
@@ -12,6 +15,7 @@ services:
      - "52080:8080"
     depends_on:
      - catalog-sqlserver
+     - fluent-bit
     networks:
      - catalog-microservice
     restart: unless-stopped
@@ -40,3 +44,37 @@ services:
      - catalog-microservice
     restart: unless-stopped
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # for testing/demo
+    ports:
+      - "9200:9200"
+    networks:
+      - catalog-microservice
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.Security.enabled=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - catalog-microservice
+
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:2.2
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      - catalog-microservice
